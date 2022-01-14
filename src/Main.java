@@ -1,12 +1,13 @@
-package pack1;
+import foods.Bread;
+import foods.Meat;
+import foods.Salad;
+import skaradjinica.Skaradjiinica;
+import skaradjinica.BreadChef;
+import skaradjinica.GrillChef;
+import skaradjinica.SaladChef;
+import skaradjinica.Seller;
 
-import pack1.employees.BreadChef;
-import pack1.employees.GrillChef;
-import pack1.employees.SaladChef;
-import pack1.employees.Seller;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Random;
 
 public class Main {
 
@@ -20,13 +21,22 @@ public class Main {
         Skaradjiinica skaradjiinica = new Skaradjiinica(breadChef, grillChef, saladChef, seller);
 
         Thread tBreadChef = new Thread(breadChef);
+        tBreadChef.setName("Bread cheff");
         tBreadChef.start();
 
         Thread tGrillChef = new Thread(grillChef);
         tGrillChef.start();
+        tGrillChef.setName("Grill cheff");
 
         Thread tSaladChef = new Thread(saladChef);
+        tSaladChef.setName("Salad chef");
         tSaladChef.start();
+
+        Thread tSeller = new Thread(seller);
+        tSeller.setName("Seller");
+        tSeller.start();
+
+
 
         /*ExecutorService bakers = Executors.newFixedThreadPool(1);
         bakers.submit(breadChef);

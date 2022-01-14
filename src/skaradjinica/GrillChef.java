@@ -1,7 +1,6 @@
-package pack1.employees;
+package skaradjinica;
 
 import foods.Meat;
-import pack1.Skaradjiinica;
 
 import java.util.Random;
 
@@ -25,7 +24,7 @@ public class GrillChef extends Employee implements Runnable{
         }
     }
 
-    private synchronized void grillMeats() {
+    private  void grillMeats() {
 
         synchronized (grillKey) {
             Meat.MeatType meatType = Meat.MeatType.values()[new Random().nextInt(Meat.MeatType.values().length)];
@@ -33,7 +32,7 @@ public class GrillChef extends Employee implements Runnable{
             while (employer.totalMeatInContainer() >= MAX_MEET_CAPACITY){
                 System.out.println("<<<<<<<< TOO MUCH MEAT >>>>>>>>>>>>>>>");
                 try {
-                    wait();
+                    grillKey.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -47,7 +46,7 @@ public class GrillChef extends Employee implements Runnable{
             Meat newGrilledMeat = new Meat(meatType);
             employer.receiveMeat(newGrilledMeat);
             System.out.println(newGrilledMeat.getFoodSubtype() + " has been grilled. Total meats are " + employer.totalMeatInContainer());
-            notifyAll();
+            grillKey.notifyAll();
         }
     }
 

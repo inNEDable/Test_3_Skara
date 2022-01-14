@@ -1,8 +1,6 @@
-package pack1.employees;
+package skaradjinica;
 
-import foods.Meat;
 import foods.Salad;
-import pack1.Skaradjiinica;
 
 import java.util.Random;
 
@@ -22,14 +20,14 @@ public class SaladChef extends Employee implements Runnable{
         }
     }
 
-    private synchronized void mixSalads() {
+    private  void mixSalads() {
         synchronized (saladKey) {
             Salad.SaladType saladType = Salad.SaladType.values()[new Random().nextInt(Salad.SaladType.values().length)];
 
             while (500 + employer.totalSaladContainer() > MAX_SALAD_CAPACITY){
                 System.out.println("<<<<<<<< TOO MUCH SALADS >>>>>>>>>>>>>>>");
                 try {
-                    wait();
+                    saladKey.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -43,7 +41,7 @@ public class SaladChef extends Employee implements Runnable{
             Salad newMixedSalad = new Salad(saladType);
             employer.receiveSalad(newMixedSalad);
             System.out.println(newMixedSalad.getFoodSubtype() + " has been MIXED. Total SALADS are " + employer.totalSaladContainer());
-            notifyAll();
+            saladKey.notifyAll();
         }
     }
 }

@@ -1,7 +1,6 @@
-package pack1.employees;
+package skaradjinica;
 
 import foods.Bread;
-import pack1.Skaradjiinica;
 
 import java.util.Random;
 
@@ -18,13 +17,13 @@ public class BreadChef extends Employee implements Runnable{
         }
     }
 
-    private synchronized void bakeBread (){
+    private void bakeBread (){
 
         synchronized (breadKey) {
             while ( employer.totalBreadsInContainer() >= MAX_BREAD_CAPACITY){
                 try {
                     System.out.println("<<<<<<<< TOO MUCH BREAD >>>>>>>>>>>>>>>");
-                    wait();
+                    breadKey.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -39,9 +38,10 @@ public class BreadChef extends Employee implements Runnable{
             Bread newBakedBread = new Bread(breadType);
             System.out.println(newBakedBread.getFoodSubtype() + " Bread has been created");
 
-            notifyAll();
             employer.receiveBread(newBakedBread);
+            breadKey.notifyAll();
         }
+
 
     }
 

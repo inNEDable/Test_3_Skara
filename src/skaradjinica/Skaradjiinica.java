@@ -1,13 +1,8 @@
-package pack1;
+package skaradjinica;
 
 import foods.Bread;
-import foods.FoodSubtype;
 import foods.Meat;
 import foods.Salad;
-import pack1.employees.BreadChef;
-import pack1.employees.GrillChef;
-import pack1.employees.SaladChef;
-import pack1.employees.Seller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,9 +14,14 @@ public class Skaradjiinica {
     private SaladChef saladChef;
     private BreadChef breadChef;
 
-    private HashMap<Bread.BreadType, ArrayList<Bread>> breadContainer = new HashMap<>();
-    private HashMap<Meat.MeatType, ArrayList<Meat>> meatContainer = new HashMap<>();
-    private HashMap<Salad.SaladType, Integer> saladContainer = new HashMap<>();
+    protected HashMap<Bread.BreadType, ArrayList<Bread>> breadContainer = new HashMap<>();
+
+    /*
+    bql - 0
+    cheren - 0
+     */
+    protected HashMap<Meat.MeatType, ArrayList<Meat>> meatContainer = new HashMap<>();
+    protected HashMap<Salad.SaladType, Integer> saladContainer = new HashMap<>();
 
 
     public Skaradjiinica(BreadChef breadChef, GrillChef grillChef, SaladChef saladChef, Seller seller) {
@@ -37,7 +37,14 @@ public class Skaradjiinica {
 
     }
 
+    public  void receiveAnOrder (Bread.BreadType breadType, Meat.MeatType meatType, Salad.SaladType saladType){
+        Order order = seller.assembleTheOrder(breadType, meatType, saladType);
 
+        System.out.println("Uspeshno realizirahme " + order);
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////
 
     public int totalBreadsInContainer() {
         int counter = 0;
@@ -47,6 +54,25 @@ public class Skaradjiinica {
         }
         return counter;
     }
+
+    public void receiveBread(Bread newBakedBread) {
+
+        if (!breadContainer.containsKey((Bread.BreadType) newBakedBread.getFoodSubtype())){
+            breadContainer.put((Bread.BreadType) newBakedBread.getFoodSubtype(), new ArrayList<>());
+        }
+
+        breadContainer.get((Bread.BreadType) newBakedBread.getFoodSubtype()).add(newBakedBread);
+        System.out.println(newBakedBread.getFoodSubtype() + " has been added. Total amount is " + totalBreadsInContainer());
+    }
+
+    public Bread getBread(Bread.BreadType breadType) {
+        Bread breadToReturn = breadContainer.get(breadType).get(0);
+        breadContainer.get(breadType).remove(breadToReturn);
+        return breadToReturn;
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////
 
     public int totalMeatInContainer() {
         int counter = 0;
@@ -68,15 +94,13 @@ public class Skaradjiinica {
         System.out.println(newGrilledMeat.getFoodSubtype() + " has been added. Total MEATS are amount is " + totalMeatInContainer());
     }
 
-    public void receiveBread(Bread newBakedBread) {
-
-        if (!breadContainer.containsKey((Bread.BreadType) newBakedBread.getFoodSubtype())){
-            breadContainer.put((Bread.BreadType) newBakedBread.getFoodSubtype(), new ArrayList<>());
-        }
-
-        breadContainer.get((Bread.BreadType) newBakedBread.getFoodSubtype()).add(newBakedBread);
-        System.out.println(newBakedBread.getFoodSubtype() + " has been added. Total amount is " + totalBreadsInContainer());
+    public Meat getMeat(Meat.MeatType meatType) {
+        Meat meatToReturn = meatContainer.get(meatType).get(0);
+        meatContainer.get(meatType).remove(meatToReturn);
+        return meatToReturn;
     }
+
+    /////////////////////////////////////////////////////////////////////////
 
     public int totalSaladContainer() {
         int counter = 0;
@@ -97,4 +121,14 @@ public class Skaradjiinica {
         saladContainer.put((Salad.SaladType) newMixedSalad.getFoodSubtype(), oldGrams + 500);
         System.out.println(newMixedSalad.getFoodSubtype() + " has been added. Total amount is " + totalSaladContainer());
     }
+
+    public Salad getSalad(Salad.SaladType saladType) {
+        Salad saladToReturn = new Salad(saladType);
+        int temp = saladContainer.get(saladType) - 200;
+        saladContainer.put(saladType, temp);
+        return  saladToReturn;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+
 }
