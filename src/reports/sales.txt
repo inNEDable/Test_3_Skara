@@ -1,2 +1,2 @@
-Thread-3Order 6 Price: 5.1 products: Order{ WHITE | PURJOLA | SNEJANKA |  
+Thread-3Order 50 Price: 4.2 products: Order{ WHITE | PLASKAVICA | DOMATI_I_KRASTAVICI |  
 

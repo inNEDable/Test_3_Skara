@@ -75,10 +75,17 @@ public class SaladChef extends Employee implements Runnable{
         Salad.SaladType saladTypeToReturn = null;
 
         for (int i = 0; i < typesOfSalads; i++) {
-            if (!employer.saladContainer.containsKey(Salad.SaladType.values()[i])
-                    || employer.saladContainer.get(Salad.SaladType.values()[i]) < maxCapacityBySalad - AMOUNT_TO_CREATE){
+            if (!employer.saladContainer.containsKey(Salad.SaladType.values()[i])){
                 saladTypeToReturn = Salad.SaladType.values()[i];
-                break;
+            }
+        }
+        if (saladTypeToReturn != null) return saladTypeToReturn;
+
+        ///////////////////////////
+
+        for (Salad.SaladType saladType : employer.saladContainer.keySet()){
+            if (employer.saladContainer.get(saladType) <= maxCapacityBySalad - AMOUNT_TO_CREATE){
+                saladTypeToReturn = saladType;
             }
         }
 
