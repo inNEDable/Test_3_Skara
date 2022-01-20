@@ -6,6 +6,9 @@ import foods.Salad;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Skaradjiinica {
 
@@ -13,15 +16,13 @@ public class Skaradjiinica {
     private GrillChef grillChef;
     private SaladChef saladChef;
     private BreadChef breadChef;
+    private double register;
 
     protected HashMap<Bread.BreadType, ArrayList<Bread>> breadContainer = new HashMap<>();
-
-    /*
-    bql - 0
-    cheren - 0
-     */
     protected HashMap<Meat.MeatType, ArrayList<Meat>> meatContainer = new HashMap<>();
     protected HashMap<Salad.SaladType, Integer> saladContainer = new HashMap<>();
+
+    protected BlockingQueue<Client> clients = new LinkedBlockingQueue<>();
 
 
     public Skaradjiinica(BreadChef breadChef, GrillChef grillChef, SaladChef saladChef, Seller seller) {
@@ -35,13 +36,29 @@ public class Skaradjiinica {
         this.saladChef.setEmployer(this);
         this.seller.setEmployer(this);
 
+        Thread a = new Thread(breadChef);
+//        a.setDaemon(true);
+        a.start();
+        Thread b = new Thread(grillChef);
+//        b.setDaemon(true);
+        b.start();
+        Thread c = new Thread(saladChef);
+//        c.setDaemon(true);
+        c.start();
+        Thread d = new Thread(seller);
+//        d.setDaemon(true);
+        d.start();
     }
 
-    public  void receiveAnOrder (Bread.BreadType breadType, Meat.MeatType meatType, Salad.SaladType saladType){
-        Order order = seller.assembleTheOrder(breadType, meatType, saladType);
+    public  void welcomeClient(Client client){
+        synchronized (Employee.sellToClientKey) {
+            clients.offer(client);
+            Employee.sellToClientKey.notifyAll();
+        }
+    }
 
-        System.out.println("Uspeshno realizirahme " + order);
-
+    public void putMoneyInRegister(double totalSum) {
+        register+= totalSum;
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -112,19 +129,20 @@ public class Skaradjiinica {
         return counter;
     }
 
-    public void receiveSalad(Salad newMixedSalad) {
+    public void receiveSalad(Salad newMixedSalad, int amountToCreate) {
         if (!saladContainer.containsKey((Salad.SaladType) newMixedSalad.getFoodSubtype())){
-            saladContainer.put((Salad.SaladType) newMixedSalad.getFoodSubtype(), 500);
+            saladContainer.put((Salad.SaladType) newMixedSalad.getFoodSubtype(), 0);
         }
 
         int oldGrams = saladContainer.get((Salad.SaladType) newMixedSalad.getFoodSubtype());
-        saladContainer.put((Salad.SaladType) newMixedSalad.getFoodSubtype(), oldGrams + 500);
+        saladContainer.put((Salad.SaladType) newMixedSalad.getFoodSubtype(), oldGrams + amountToCreate);
         System.out.println(newMixedSalad.getFoodSubtype() + " has been added. Total amount is " + totalSaladContainer());
     }
 
     public Salad getSalad(Salad.SaladType saladType) {
+
         Salad saladToReturn = new Salad(saladType);
-        int temp = saladContainer.get(saladType) - 200;
+        int temp = saladContainer.get(saladType) - 500;
         saladContainer.put(saladType, temp);
         return  saladToReturn;
     }

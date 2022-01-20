@@ -1,13 +1,10 @@
 import foods.Bread;
 import foods.Meat;
 import foods.Salad;
-import skaradjinica.Skaradjiinica;
-import skaradjinica.BreadChef;
-import skaradjinica.GrillChef;
-import skaradjinica.SaladChef;
-import skaradjinica.Seller;
+import skaradjinica.*;
 
 import java.util.Random;
+import java.util.concurrent.Callable;
 
 public class Main {
 
@@ -20,33 +17,10 @@ public class Main {
         Seller seller = new Seller();
         Skaradjiinica skaradjiinica = new Skaradjiinica(breadChef, grillChef, saladChef, seller);
 
-        Thread tBreadChef = new Thread(breadChef);
-        tBreadChef.setName("Bread cheff");
-        tBreadChef.start();
+        for (int i = 0; i < 50; i++) {
+            new Client("Client " + (i+1), 20).enterSkaradjiinica(skaradjiinica);
+        }
 
-        Thread tGrillChef = new Thread(grillChef);
-        tGrillChef.start();
-        tGrillChef.setName("Grill cheff");
-
-        Thread tSaladChef = new Thread(saladChef);
-        tSaladChef.setName("Salad chef");
-        tSaladChef.start();
-
-        Thread tSeller = new Thread(seller);
-        tSeller.setName("Seller");
-        tSeller.start();
-
-
-
-        /*ExecutorService bakers = Executors.newFixedThreadPool(1);
-        bakers.submit(breadChef);
-
-
-        ExecutorService saladers = Executors.newFixedThreadPool(1);
-        saladers.submit(saladChef);
-
-        ExecutorService grillers = Executors.newFixedThreadPool(1);
-        grillers.submit(grillChef);*/
 
 
     }

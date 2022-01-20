@@ -4,9 +4,14 @@ import foods.Bread;
 import foods.Meat;
 import foods.Salad;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
 import java.util.Random;
 
 public class Seller extends Employee implements Runnable{
+    private static int orderCount = 0;
 
     private Skaradjiinica employer;
 
@@ -17,13 +22,53 @@ public class Seller extends Employee implements Runnable{
     @Override
     public void run() {
         while (true) {
-            Order order = assembleTheOrder(
-                    Bread.BreadType.values()[new Random().nextInt(Bread.BreadType.values().length)],
-                    Meat.MeatType.values()[new Random().nextInt(Meat.MeatType.values().length)],
-                    Salad.SaladType.values()[new Random().nextInt(Salad.SaladType.values().length)]
-            );
-            System.out.println("Uspeshno realizirahme " + order);
+            serveClients();
         }
+    }
+
+    private void serveClients() {
+        synchronized (Employee.sellToClientKey) {
+            while (employer.clients.isEmpty()){
+                try {
+                    Employee.sellToClientKey.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Client currentClient = employer.clients.poll();
+            Order clientOrder = assembleTheOrder(currentClient.getWantedBread(), currentClient.getWantedMeat(), currentClient.getWantedSalad());
+
+            currentClient.recieveOrder(clientOrder);
+            try {
+                createReport(clientOrder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                currentClient.payBill(clientOrder.getTotalSum());
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            employer.putMoneyInRegister(clientOrder.getTotalSum());
+        }
+    }
+
+    private void createReport(Order clientOrder) throws IOException {
+        File file = new File("C:\\Users\\NED\\IdeaProjects\\Test_3_Skara\\src\\reports");
+        file.mkdir();
+
+        File file2 = new File("C:\\Users\\NED\\IdeaProjects\\Test_3_Skara\\src\\reports\\sales.txt");
+
+        file2.createNewFile();
+
+
+        PrintStream printStream = new PrintStream(file2);
+        printStream.println(Thread.currentThread().getName() + "Order " + (++orderCount) + " Price: " + clientOrder.getTotalSum() + " products: " + clientOrder + "\n");
+        printStream.close();
+
     }
 
     public  Order assembleTheOrder(Bread.BreadType breadType, Meat.MeatType meatType, Salad.SaladType saladType) {
@@ -72,11 +117,4 @@ public class Seller extends Employee implements Runnable{
         return new Order(breadForClient, meatForClient, saladForClient);
     }
 
-     /*   private boolean hasBread(Bread.BreadType breadType) {
-        for (Bread.BreadType keyBreadType : employer.breadContainer.keySet()){
-            if (keyBreadType.equals(breadType)){
-                employer.breadContainer.get(breadKey)
-            }
-        }
-    }*/
 }

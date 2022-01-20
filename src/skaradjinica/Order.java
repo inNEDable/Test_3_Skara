@@ -19,9 +19,15 @@ public class Order {
     @Override
     public String toString() {
         return "Order{ " +
-                 breadType.getFoodSubtype() +
-                meatType.getFoodSubtype() +
-                 saladType.getFoodSubtype() +
+                 breadType.getFoodSubtype() + " | " +
+                meatType.getFoodSubtype() + " | " +
+                 saladType.getFoodSubtype() + " | " +
                 " ";
+    }
+
+    public double getTotalSum() {
+        return breadType.getFoodSubtype().getPrice()
+                + meatType.getFoodSubtype().getPrice()
+                + saladType.getFoodSubtype().getPrice();
     }
 }

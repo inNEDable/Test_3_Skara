@@ -29,7 +29,7 @@ public class BreadChef extends Employee implements Runnable{
                 }
             }
 
-            Bread.BreadType breadType = new Random().nextBoolean() ? Bread.BreadType.WHITE : Bread.BreadType.WHOLEGRAIN;
+            Bread.BreadType breadType = getCorrectTypeOfBread();
             try {
                 Thread.sleep(breadType.getPrepareTimeMilliseconds());
             } catch (InterruptedException e) {
@@ -43,6 +43,24 @@ public class BreadChef extends Employee implements Runnable{
         }
 
 
+    }
+
+    private Bread.BreadType getCorrectTypeOfBread() {
+        // HashMap<Bread.BreadType, ArrayList<Bread>> breadContainer
+
+        int breadTypes = Bread.BreadType.values().length;
+        int maxCapacityByBread = MAX_BREAD_CAPACITY / breadTypes;
+
+        Bread.BreadType breadTypeToReturn = null;
+
+        for (int i = 0; i < breadTypes; i++) {
+            if (employer.breadContainer.get(Bread.BreadType.values()[i]) == null
+                    ||employer.breadContainer.get(Bread.BreadType.values()[i]).size() < maxCapacityByBread){
+                breadTypeToReturn = Bread.BreadType.values()[i];
+                break;
+            }
+        }
+        return breadTypeToReturn;
     }
 
     public void setEmployer(Skaradjiinica employer) {

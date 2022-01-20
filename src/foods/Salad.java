@@ -17,7 +17,7 @@ public class Salad extends Food{
             this.prepareTimeMilliseconds = prepareTimeMilliseconds;
         }
 
-        public double getPriceLeva() {
+        public double getPrice() {
             return priceLeva;
         }
 

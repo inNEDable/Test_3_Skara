@@ -2,7 +2,9 @@ package skaradjinica;
 
 public abstract class Employee {
 
-    protected final Object saladKey = new Object();
-    protected final Object grillKey = new Object();
-    protected final Object breadKey = new Object();
+    protected final static Object saladKey = new Object();
+    protected final static Object grillKey = new Object();
+    protected final static Object breadKey = new Object();
+    public final static Object sellToClientKey = new Object();
+
 }

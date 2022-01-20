@@ -27,8 +27,6 @@ public class GrillChef extends Employee implements Runnable{
     private  void grillMeats() {
 
         synchronized (grillKey) {
-            Meat.MeatType meatType = Meat.MeatType.values()[new Random().nextInt(Meat.MeatType.values().length)];
-
             while (employer.totalMeatInContainer() >= MAX_MEET_CAPACITY){
                 System.out.println("<<<<<<<< TOO MUCH MEAT >>>>>>>>>>>>>>>");
                 try {
@@ -37,6 +35,8 @@ public class GrillChef extends Employee implements Runnable{
                     e.printStackTrace();
                 }
             }
+
+            Meat.MeatType meatType = getTheCorrectMeatType();
 
             try {
                 Thread.sleep(meatType.getPrepareTimeMilliseconds());
@@ -48,6 +48,25 @@ public class GrillChef extends Employee implements Runnable{
             System.out.println(newGrilledMeat.getFoodSubtype() + " has been grilled. Total meats are " + employer.totalMeatInContainer());
             grillKey.notifyAll();
         }
+    }
+
+    private Meat.MeatType getTheCorrectMeatType() {
+        /// HashMap<Meat.MeatType, ArrayList<Meat>> meatContainer
+
+        int typesOfMeat = Meat.MeatType.values().length;
+        int capacityByMeatType = MAX_MEET_CAPACITY / typesOfMeat;
+
+        Meat.MeatType meatToReturn = null;
+
+        for (int i = 0; i < typesOfMeat; i++) {
+            if (employer.meatContainer.get(Meat.MeatType.values()[i]) == null
+                    || employer.meatContainer.get(Meat.MeatType.values()[i]).size() < capacityByMeatType){
+                meatToReturn =  Meat.MeatType.values()[i];
+                break;
+            }
+        }
+
+        return meatToReturn;
     }
 
 }

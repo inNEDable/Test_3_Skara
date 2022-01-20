@@ -7,6 +7,7 @@ public class Meat extends Food{
         PLASKAVICA(2, 103),
         PURJOLA(3, 104);
 
+
         private final double priceLeva;
         private final long prepareTimeMilliseconds;
 
@@ -15,7 +16,7 @@ public class Meat extends Food{
             this.prepareTimeMilliseconds = prepareTimeMilliseconds;
         }
 
-        public double getPriceLeva() {
+        public double getPrice() {
             return priceLeva;
         }
 
@@ -23,8 +24,6 @@ public class Meat extends Food{
             return prepareTimeMilliseconds;
         }
     }
-
-    private MeatType meatType;
 
     public Meat(MeatType foodSubtype) {
         super(foodSubtype);
