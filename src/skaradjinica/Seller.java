@@ -57,18 +57,15 @@ public class Seller extends Employee implements Runnable{
     }
 
     private void createReport(Order clientOrder) throws IOException {
-        File file = new File("C:\\Users\\NED\\IdeaProjects\\Test_3_Skara\\src\\reports");
-        file.mkdir();
+        String path = "./reports/sales.txt";
+        if (!Files.exists(Path.of(path))){
+            Files.createFile(Path.of(path));
+        }
 
-        File file2 = new File("C:\\Users\\NED\\IdeaProjects\\Test_3_Skara\\src\\reports\\sales.txt");
-
-        file2.createNewFile();
-
-
-        PrintStream printStream = new PrintStream(file2);
-        printStream.println(Thread.currentThread().getName() + "Order " + (++orderCount) + " Price: " + clientOrder.getTotalSum() + " products: " + clientOrder + "\n");
-        printStream.close();
-
+        Files.writeString(
+                Path.of(path),
+                "Order " + (++orderCount) + " Price: " + clientOrder.getTotalSum() + " products: " + clientOrder + "\n",
+                StandardOpenOption.APPEND);
     }
 
     public  Order assembleTheOrder(Bread.BreadType breadType, Meat.MeatType meatType, Salad.SaladType saladType) {

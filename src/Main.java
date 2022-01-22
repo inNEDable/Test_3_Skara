@@ -16,7 +16,11 @@ public class Main {
         SaladChef saladChef = new SaladChef();
         Seller seller = new Seller();
         Skaradjiinica skaradjiinica = new Skaradjiinica(breadChef, grillChef, saladChef, seller);
-
+        try {
+            Files.deleteIfExists(Path.of("./reports/sales.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (int i = 0; i < 50; i++) {
             new Client("Client " + (i+1), 20).enterSkaradjiinica(skaradjiinica);
         }
