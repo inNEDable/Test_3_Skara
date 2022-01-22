@@ -21,6 +21,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
         for (int i = 0; i < 50; i++) {
             new Client("Client " + (i+1), 20).enterSkaradjiinica(skaradjiinica);
         }
