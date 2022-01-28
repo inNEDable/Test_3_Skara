@@ -30,6 +30,7 @@ public class BreadChef extends Employee implements Runnable{
             }
 
             Bread.BreadType breadType = getCorrectTypeOfBread();
+
             try {
                 Thread.sleep(breadType.getPrepareTimeMilliseconds());
             } catch (InterruptedException e) {
@@ -41,8 +42,6 @@ public class BreadChef extends Employee implements Runnable{
             employer.receiveBread(newBakedBread);
             breadKey.notifyAll();
         }
-
-
     }
 
     private Bread.BreadType getCorrectTypeOfBread() {

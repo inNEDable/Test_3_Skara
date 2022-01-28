@@ -3,6 +3,9 @@ import foods.Meat;
 import foods.Salad;
 import skaradjinica.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
@@ -17,7 +20,7 @@ public class Main {
         Seller seller = new Seller();
         Skaradjiinica skaradjiinica = new Skaradjiinica(breadChef, grillChef, saladChef, seller);
         try {
-            Files.deleteIfExists(Path.of("./reports/sales.txt"));
+            Files.deleteIfExists(Path.of("C:\\Users\\NED\\IdeaProjects\\Test_3_Skara\\src\\main\\java\\reports\\sales.txt"));
         } catch (IOException e) {
             e.printStackTrace();
         }

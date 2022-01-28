@@ -16,7 +16,10 @@ public class Skaradjiinica {
     private GrillChef grillChef;
     private SaladChef saladChef;
     private BreadChef breadChef;
+    private Owner owner;
     private double register;
+    private int id;
+
 
     protected HashMap<Bread.BreadType, ArrayList<Bread>> breadContainer = new HashMap<>();
     protected HashMap<Meat.MeatType, ArrayList<Meat>> meatContainer = new HashMap<>();
@@ -30,6 +33,10 @@ public class Skaradjiinica {
         this.grillChef = grillChef;
         this.saladChef = saladChef;
         this.seller = seller;
+        this.id = 123456;
+        this.owner = new Owner(this);
+        this.owner.setDaemon(true);
+        this.owner.start();
 
         this.breadChef.setEmployer(this);
         this.grillChef.setEmployer(this);
@@ -149,4 +156,8 @@ public class Skaradjiinica {
 
     /////////////////////////////////////////////////////////////////////////
 
+
+    public int getId() {
+        return id;
+    }
 }

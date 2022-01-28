@@ -1,14 +1,17 @@
 package skaradjinica;
 
+import db_shit.DBManager;
 import foods.Bread;
 import foods.Meat;
 import foods.Salad;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.nio.file.Files;
-import java.util.Random;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Seller extends Employee implements Runnable{
     private static int orderCount = 0;
@@ -41,7 +44,7 @@ public class Seller extends Employee implements Runnable{
 
             currentClient.recieveOrder(clientOrder);
             try {
-                createReport(clientOrder);
+                createLocalReport(clientOrder);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -56,16 +59,17 @@ public class Seller extends Employee implements Runnable{
         }
     }
 
-    private void createReport(Order clientOrder) throws IOException {
-        String path = "./reports/sales.txt";
+    private void createLocalReport(Order clientOrder) throws IOException {
+        String path = "C:\\Users\\NED\\IdeaProjects\\Test_3_Skara\\src\\main\\java\\reports\\sales.txt";
+
         if (!Files.exists(Path.of(path))){
             Files.createFile(Path.of(path));
         }
 
-        Files.writeString(
-                Path.of(path),
-                "Order " + (++orderCount) + " Price: " + clientOrder.getTotalSum() + " products: " + clientOrder + "\n",
-                StandardOpenOption.APPEND);
+        clientOrder.setDate(LocalDate.now());
+
+        Files.writeString(Path.of(path), clientOrder.toString()+"\n", StandardOpenOption.APPEND);
+
     }
 
     public  Order assembleTheOrder(Bread.BreadType breadType, Meat.MeatType meatType, Salad.SaladType saladType) {
@@ -113,5 +117,4 @@ public class Seller extends Employee implements Runnable{
 
         return new Order(breadForClient, meatForClient, saladForClient);
     }
-
 }
